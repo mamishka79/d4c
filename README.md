@@ -124,9 +124,6 @@ core/
 2. Create views and templates:
 ```
 📁 Project Structure (for users app)
-cpp
-Copy
-Edit
 users/
 ├── views.py
 ├── urls.py
@@ -136,7 +133,7 @@ users/
 │       ├── register.html
 │       └── logged_out.html (optional)
 
-
+----------------------------------------------------
 
 
 ✏️ 2. Views (in users/views.py)
@@ -155,7 +152,7 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
-
+--------------------------------------------------------
 
 🌐 3. URLs (in users/urls.py)
 from django.urls import path
@@ -173,9 +170,9 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
+
 ➡️ Then include users.urls in your project-level urls.py:
 from django.urls import include, path
-
 urlpatterns = [
     path('users/', include('users.urls')),
     # your other urls...
@@ -184,9 +181,6 @@ urlpatterns = [
 
 🧾 4. Templates (create in users/templates/registration/)
 🔐 login.html
-html
-Copy
-Edit
 <h2>Login</h2>
 <form method="post">
   {% csrf_token %}
@@ -204,8 +198,6 @@ Edit
   {{ form.as_p }}
   <button type="submit">Register</button>
 </form>
-
-
 
 🚪 logged_out.html (optional but recommended)
 <h2>You have been logged out.</h2>
@@ -228,9 +220,10 @@ TEMPLATES = [
         ...
     },
 ]
+
+
+
 📧 6. Password Reset Flow
-
-
 When you go to /users/password_reset/, it’ll:
 
 Ask for email
