@@ -135,10 +135,11 @@ users/
 │       ├── login.html
 │       ├── register.html
 │       └── logged_out.html (optional)
+
+
+
+
 ✏️ 2. Views (in users/views.py)
-python
-Copy
-Edit
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
@@ -153,10 +154,10 @@ def register_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
+
 🌐 3. URLs (in users/urls.py)
-python
-Copy
-Edit
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
@@ -173,16 +174,14 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 ]
 ➡️ Then include users.urls in your project-level urls.py:
-
-python
-Copy
-Edit
 from django.urls import include, path
 
 urlpatterns = [
     path('users/', include('users.urls')),
     # your other urls...
 ]
+
+
 🧾 4. Templates (create in users/templates/registration/)
 🔐 login.html
 html
@@ -195,26 +194,25 @@ Edit
   <button type="submit">Login</button>
 </form>
 <a href="{% url 'password_reset' %}">Forgot password?</a>
+
+
+
 📝 register.html
-html
-Copy
-Edit
 <h2>Register</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Register</button>
 </form>
+
+
+
 🚪 logged_out.html (optional but recommended)
-html
-Copy
-Edit
 <h2>You have been logged out.</h2>
 <a href="{% url 'login' %}">Login again</a>
+
+
 ⚙️ 5. Settings (in settings.py)
-python
-Copy
-Edit
 # Authentication settings
 LOGIN_REDIRECT_URL = 'home'   # Update this to your actual homepage
 LOGOUT_REDIRECT_URL = 'login'
@@ -226,11 +224,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TEMPLATES = [
     {
         ...
-        'DIRS': [BASE_DIR / 'templates'],  # or wherever you keep base templates
+        'DIRS': [BASE_DIR / 'templates'], # or wherever you keep base templates
         ...
     },
 ]
 📧 6. Password Reset Flow
+
+
 When you go to /users/password_reset/, it’ll:
 
 Ask for email
@@ -240,6 +240,7 @@ Send a reset link (prints to terminal because of console backend)
 You follow link → new password form
 
 Make sure your users have email fields filled in (or use custom User model for real apps).
+
 
 🔁 Summary
 ✅ Register: /users/register/
