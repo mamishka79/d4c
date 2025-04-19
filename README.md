@@ -177,7 +177,7 @@ Use `get_object_or_404(Post, id=id)` for safe access.
 
 ### 🔹 PHASE 6 – Deployment
 
-#### ✅ Shazia
+#### ✅ Alisher
 
 - Create PythonAnywhere account
 - Deploy the project:
