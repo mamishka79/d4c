@@ -123,14 +123,128 @@ core/
 1. Set up Django built-in **login**, **register**, and **logout**
 2. Create views and templates:
 ```
+📁 Project Structure (for users app)
 users/
-├── templates/registration/
-    ├── login.html
-    ├── register.html
-```
+├── views.py
+├── urls.py
+├── templates/
+│   └── registration/
+│       ├── login.html
+│       ├── register.html
+│       └── logged_out.html (optional)
 
-3. Add URLs for login/register/logout
-4. Add password reset with email (SMTP or console backend)
+----------------------------------------------------
+
+
+✏️ 2. Views (in users/views.py)
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # auto-login after registration
+            return redirect('home')  # Change this to your home page
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+--------------------------------------------------------
+
+🌐 3. URLs (in users/urls.py)
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from . import views
+
+urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('register/', views.register_view, name='register'),
+
+    # Password reset URLs
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+]
+
+➡️ Then include users.urls in your project-level urls.py:
+from django.urls import include, path
+urlpatterns = [
+    path('users/', include('users.urls')),
+    # your other urls...
+]
+
+
+🧾 4. Templates (create in users/templates/registration/)
+🔐 login.html
+<h2>Login</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Login</button>
+</form>
+<a href="{% url 'password_reset' %}">Forgot password?</a>
+
+
+
+📝 register.html
+<h2>Register</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Register</button>
+</form>
+
+🚪 logged_out.html (optional but recommended)
+<h2>You have been logged out.</h2>
+<a href="{% url 'login' %}">Login again</a>
+
+
+⚙️ 5. Settings (in settings.py)
+# Authentication settings
+LOGIN_REDIRECT_URL = 'home'   # Update this to your actual homepage
+LOGOUT_REDIRECT_URL = 'login'
+
+# Use Django's built-in email backend for dev/testing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Make sure your templates are set up properly
+TEMPLATES = [
+    {
+        ...
+        'DIRS': [BASE_DIR / 'templates'], # or wherever you keep base templates
+        ...
+    },
+]
+
+
+
+📧 6. Password Reset Flow
+When you go to /users/password_reset/, it’ll:
+
+Ask for email
+
+Send a reset link (prints to terminal because of console backend)
+
+You follow link → new password form
+
+Make sure your users have email fields filled in (or use custom User model for real apps).
+
+
+🔁 Summary
+✅ Register: /users/register/
+
+✅ Login: /users/login/
+
+✅ Logout: /users/logout/
+
+✅ Password reset: /users/password_reset/ + flow
+
+✅ Console prints emails
 
 #### 💡 How:
 In `settings.py`:
