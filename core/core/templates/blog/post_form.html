@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if mode == 'create' %}New Post{% else %}Edit Post{% endif %}
+{% endblock %}
+
+{% block content %}
+<h2>
+    {% if mode == 'create' %}Create Post{% else %}Edit Post{% endif %}
+</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="mb-3">
+        {{ form.title.label_tag }}
+        {{ form.title }}
+        {{ form.title.errors }}
+    </div>
+    <div class="mb-3">
+        {{ form.content.label_tag }}
+        {{ form.content }}
+        {{ form.content.errors }}
+    </div>
+    <button type="submit" class="btn btn-primary">
+        {% if mode == 'create' %}Publish{% else %}Save{% endif %}
+    </button>
+</form>
+{% endblock %}
